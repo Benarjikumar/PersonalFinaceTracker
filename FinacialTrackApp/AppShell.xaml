@@ -3,22 +3,23 @@
     x:Class="FinacialTrackApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:localisation="clr-namespace:FinacialTrackApp.Localisation"
     xmlns:pages="clr-namespace:FinacialTrackApp.Pages"
     
     Shell.FlyoutBehavior="Disabled"
     Title="FinacialTrackApp">
 
     <TabBar>
-        <Tab Title="Home" Icon="home.png" >
+        <Tab Title="{x:Static localisation:AppResources.HomeTab}" Icon="home.png" >
             <ShellContent ContentTemplate="{DataTemplate pages:HomePage}"/>
         </Tab>
 
-        <Tab Title="Transactions" Icon="transactions2.png">
+        <Tab Title="{x:Static localisation:AppResources.TransactionTab}" Icon="transactions2.png">
             <ShellContent ContentTemplate="{DataTemplate pages:TransactionsPage}"/>
 
         </Tab>
 
-        <Tab Title="Goals" Icon="goals.png">
+        <Tab Title="{x:Static localisation:AppResources.GoalsTab}" Icon="goals.png">
             <ShellContent  ContentTemplate="{DataTemplate pages:GoalsPage}"/>
         </Tab>
     </TabBar>

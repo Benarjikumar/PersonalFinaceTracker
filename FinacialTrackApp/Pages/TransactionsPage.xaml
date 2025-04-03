@@ -2,11 +2,74 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FinacialTrackApp.Pages.TransactionsPage"
-             Title="TransactionsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+              xmlns:localisation="clr-namespace:FinacialTrackApp.Localisation"
+             xmlns:converters="clr-namespace:FinacialTrackApp.Converters"
+             x:Name="Page" 
+             Title="{x:Static localisation:AppResources.TransactionTab}">
+    <ContentPage.Resources>
+        <converters:CurrencyConverter x:Key="CurrencyConvereter"/>
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <Style x:Key="TransactionLabel" TargetType="Label" >
+            <Setter Property="FontSize" Value="Medium"/>
+            <Setter Property="TextColor" Value="DarkGray"/>
+        </Style>
+
+        <!-- Adding New Transactions -->
+    </ContentPage.Resources>
+    <StackLayout>
+        <Label Text="{x:Static localisation:AppResources.TransactionLabel} " FontSize="Title"/>
+        <Entry Placeholder="{x:Static localisation:AppResources.DescriptionPlaceHolder}" Text="{Binding NewTransactionDescription}"/>
+        <Entry Placeholder="{x:Static localisation:AppResources.AmountPlaceholder}"
+               Text="{Binding NewTransactionAmount}" 
+               Keyboard="Numeric"
+               BackgroundColor="{Binding IsAmountValid,Converter={StaticResource BoolToColorConverter}}"/>
+        <DatePicker Date="{Binding NewTransactionDate}"/>
+        <Picker Title="{x:Static localisation:AppResources.CategoryPickerTitle}" 
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding NewTransactionCategory}"/>
+        <Button Text="{x:Static localisation:AppResources.AddTransactionButton}"
+                Command="{Binding AddOrUpdateTransactionCommand}"/>
+
+        <!-- Filter by category -->
+        <Label Text="{x:Static localisation:AppResources.FilterTransactionsLabel}" FontSize="Title" Margin="0,20,0,0" />
+
+        <Picker Title="{x:Static localisation:AppResources.FilterByCategoryTitle}" 
+               ItemsSource="{Binding FilterCategories}"
+               SelectedItem="{Binding SelectedFilterCategory, Mode=TwoWay}"
+                />
+
+
+
+
+
+        <!-- List of transactions -->
+
+        <Label Text="Transaction History" FontSize="Title" Margin="0,20,0,0" />
+        <CollectionView ItemsSource="{Binding FilteredTransactions}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" Orientation="Horizontal">
+                        <StackLayout >
+                            <Label Text="{Binding Description}"  Style="{StaticResource TransactionLabel }"/>
+                            <Label Text="{Binding Amount ,Converter={StaticResource CurrencyConvereter}}" FontSize="Small"/>
+                            <Label Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}" FontSize="Small" />
+                            <Label Text="{Binding Category}" FontSize="Small" />
+                        </StackLayout>
+
+                        <Button Text="Edit" 
+                            Command="{Binding   BindingContext.EditTransactionCommand, Source={x:Reference Page}}" 
+                            CommandParameter="{Binding .}" 
+                            BackgroundColor="Blue" 
+                            TextColor="White" />
+                        <Button Text="Delete" 
+                            Command="{Binding BindingContext.DeleteTransactionCommand, Source={x:Reference Page}}" 
+                            CommandParameter="{Binding .}" 
+                            BackgroundColor="Red" 
+                            TextColor="White" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+       
+    </StackLayout>
 </ContentPage>
